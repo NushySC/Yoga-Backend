@@ -1,21 +1,24 @@
 const express = require('express');
 const fs = require('fs');
+const morgan = require('morgan');
 
 const app = express();
 
 //middleware
+
+app.use(morgan('dev'));
+
 app.use(express.json());
 
 app.use((req, res, next) => {
   console.log('Hello from the middleware 😁 ');
   next();
-})
+});
 
-app.use ((req, res, next) => {
+app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
-  next()
-})
-
+  next();
+});
 
 // app.get('/', (req, res) => {
 //   res
@@ -23,12 +26,13 @@ app.use ((req, res, next) => {
 //     .json({ message: 'Hello from the server side', app: 'Yogatours' });
 // });
 
+///route handlers
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 );
 
 const getAllTours = (req, res) => {
-  console.log(req.requestTime)
+  console.log(req.requestTime);
   res.status(200).json({
     status: 'success',
     results: tours.length,
@@ -112,6 +116,42 @@ const deleteTour = (req, res) => {
     data: null
   });
 };
+
+const getAllUsers = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not defined'
+  });
+};
+
+const getUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not defined'
+  });
+};
+
+const createUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not defined'
+  });
+};
+
+const deleteUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not defined'
+  });
+};
+
+const updateUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not defined'
+  });
+};
+
 //especify version
 //app.get('/api/v1/tours', getAllTours);
 
@@ -127,17 +167,43 @@ const deleteTour = (req, res) => {
 
 //app.delete('/api/v1/tours/:id', deleteTour);
 
-app
-  .route('/api/v1/tours')
+///routes
+const tourRouter = express.Router();
+const userRouter = express.Router();
+
+//change app for tourRouter/userRouter
+//this is called mounting router
+// app.use
+// .route('/api/v1/tours')
+// .get(getAllTours)
+// .post(newTour);
+
+tourRouter
+  .route('/')
   .get(getAllTours)
   .post(newTour);
 
-app
-  .route('/api/v1/tours/:id')
+tourRouter
+  .route('/:id')
   .patch(updateTour)
   .delete(deleteTour)
   .get(getTour);
 
+userRouter
+  .route('/')
+  .get(getAllUsers)
+  .post(createUser);
+
+userRouter
+  .route('/:id')
+  .get(getUser)
+  .patch(updateUser)
+  .delete(deleteUser);
+
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter);
+
+///server
 const port = 3000;
 app.listen(port, () => {
   console.log(`App started on port ${port}`);
