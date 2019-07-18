@@ -1,7 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
-const tourRouter = require('./routes/tourRoutes')
-const userRouter = require('./routes/userRoutes')
+const tourRouter = require('./routes/tourRoutes');
+const userRouter = require('./routes/userRoutes');
 
 const app = express();
 
@@ -29,9 +29,7 @@ app.use((req, res, next) => {
 
 ///route handlers
 
-
 // to tour routes
-
 
 //especify version
 //app.get('/api/v1/tours', getAllTours);
@@ -50,7 +48,6 @@ app.use((req, res, next) => {
 
 ///routes
 
-
 //change app for tourRouter/userRouter
 //this is called mounting router
 // app.use
@@ -62,7 +59,5 @@ app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
 ///server
-const port = 3000;
-app.listen(port, () => {
-  console.log(`App started on port ${port}`);
-});
+
+module.exports = app;
